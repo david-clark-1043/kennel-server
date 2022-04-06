@@ -1,7 +1,11 @@
+import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 # does not work right
-from views import get_all_animals, get_single_animal, get_single_location, get_all_locations, get_all_employees, get_single_employee
-
+from views import get_all_animals, get_single_animal, create_animal, delete_animal
+from views import get_single_location, get_all_locations, create_location, delete_location
+from views import get_all_employees, get_single_employee, create_employee, delete_employee
+from views import get_all_customers, get_single_customer, create_customer, delete_customer
+ 
 # works with animal_requests.get_all_animals()
 # from views import animal_requests
 
@@ -88,21 +92,26 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "animals":
             if id is not None:
                 response = f"{get_single_animal(id)}"
-
             else:
                 response = f"{get_all_animals()}"
+                
         if resource == "locations":
             if id is not None:
                 response = f"{get_single_location(id)}"
-
             else:
                 response = f"{get_all_locations()}"
+                
         if resource == "employees":
             if id is not None:
                 response = f"{get_single_employee(id)}"
-
             else:
                 response = f"{get_all_employees()}"
+                
+        if resource == "customers":
+            if id is not None:
+                response = f"{get_single_customer(id)}"
+            else:
+                response = f"{get_all_customers()}"
 
         # self.wfile.write(response.encode())
 
@@ -114,13 +123,33 @@ class HandleRequests(BaseHTTPRequestHandler):
     def do_POST(self):
         """Handles POST requests to the server
         """
-        # Set response code to 'Created'
         self._set_headers(201)
-
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
-        response = f"received post request:<br>{post_body}"
-        self.wfile.write(response.encode())
+
+        # Convert JSON string to a Python dictionary
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Initialize new animal
+        new_object = None
+
+        # Add a new animal to the list. Don't worry about
+        # the orange squiggle, you'll define the create_animal
+        # function next.
+        if resource == "animals":
+            new_object = create_animal(post_body)
+        if resource == "locations":
+            new_object = create_location(post_body)
+        if resource == "employees":
+            new_object = create_employee(post_body)
+        if resource == "customers":
+            new_object = create_customer(post_body)
+
+        # Encode the new animal and send in response
+        self.wfile.write(f"{new_object}".encode())
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any PUT request.
@@ -130,6 +159,25 @@ class HandleRequests(BaseHTTPRequestHandler):
         """
         self.do_POST()
 
+    def do_DELETE(self):
+        # Set a 204 response code
+        self._set_headers(204)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Delete a single animal from the list
+        if resource == "animals":
+            delete_animal(id)
+        if resource == "locations":
+            delete_location(id)
+        if resource == "employees":
+            delete_employee(id)
+        if resource == "customers":
+            delete_customer(id)
+
+        # Encode the new animal and send in response
+        self.wfile.write("".encode())
 
 # This function is not inside the class. It is the starting
 # point of this application.
