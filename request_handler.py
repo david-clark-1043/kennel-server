@@ -138,7 +138,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         post_body = json.loads(post_body)
 
         # Parse the URL
-        (resource, id) = self.parse_url(self.path)
+        resource = self.parse_url(self.path)[0]
 
         # Initialize new animal
         new_object = None
