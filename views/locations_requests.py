@@ -43,6 +43,15 @@ def get_single_location(id):
     return requested_location
 
 def create_location(location):
+    """
+    adds location object to the list
+
+    Args:
+        location (dict): location object to be added
+
+    Returns:
+        dict: object added with the correct id
+    """
     # Get the id value of the last location in the list
     max_id = LOCATIONS[-1]["id"]
 
@@ -59,6 +68,12 @@ def create_location(location):
     return location
 
 def delete_location(id):
+    """
+    removes location object from the list
+
+    Args:
+        id (int): id of location object to remove
+    """
     # Initial -1 value for location index, in case one isn't found
     location_index = -1
 
@@ -72,3 +87,18 @@ def delete_location(id):
     # If the location was found, use pop(int) to remove it from list
     if location_index >= 0:
         LOCATIONS.pop(location_index)
+
+def update_location(id, new_location):
+    """changes single location in the list
+
+    Args:
+        id (int): id of location to change
+        new_location (dict): location object to be added
+    """
+    # Iterate the locationS list, but use enumerate() so that
+    # you can access the index value of each item.
+    for index, location in enumerate(LOCATIONS):
+        if location["id"] == id:
+            # Found the location. Update the value.
+            LOCATIONS[index] = new_location
+            break

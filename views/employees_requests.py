@@ -41,6 +41,15 @@ def get_single_employee(id):
     return requested_employee
 
 def create_employee(employee):
+    """
+    adds new employee to the list
+
+    Args:
+        employee (dict): dict of employee to add
+
+    Returns:
+        dict: dict of the added employee with the correct id
+    """
     # Get the id value of the last employee in the list
     max_id = EMPLOYEES[-1]["id"]
 
@@ -57,6 +66,12 @@ def create_employee(employee):
     return employee
 
 def delete_employee(id):
+    """
+    removes employee from the list
+
+    Args:
+        id (int): id of employee to remove
+    """
     # Initial -1 value for employee index, in case one isn't found
     employee_index = -1
 
@@ -70,3 +85,18 @@ def delete_employee(id):
     # If the employee was found, use pop(int) to remove it from list
     if employee_index >= 0:
         EMPLOYEES.pop(employee_index)
+
+def update_employee(id, new_employee):
+    """changes single employee in the list
+
+    Args:
+        id (int): id of employee to change
+        new_employee (dict): employee object to be added
+    """
+    # Iterate the employeeS list, but use enumerate() so that
+    # you can access the index value of each item.
+    for index, employee in enumerate(EMPLOYEES):
+        if employee["id"] == id:
+            # Found the employee. Update the value.
+            EMPLOYEES[index] = new_employee
+            break
